@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Plate Number Generator</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      margin: 0;
+      display: flex;
+      gap: 30px;
+    }
+
+    .form-container {
+      width: 40%;
+      min-width: 300px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: bold;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .checkbox-group input[type="checkbox"] {
+      margin-right: 8px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: none;
+      background-color: #007BFF;
+      color: white;
+      font-weight: bold;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .button-group {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .button-group button {
+      flex: 1;
+      margin-top: 0;
+    }
+
+    .results-container {
+      flex: 1;
+      height: auto;
+      max-height: 90vh;
+      background: #f9f9f9;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 15px;
+      overflow-x: auto;
+    }
+
+    .results-container h3 {
+      margin-top: 0;
+      text-align: center;
+    }
+
+    #results {
+      white-space: normal;
+      font-family: monospace;
+      font-size: 14px;
+      line-height: 1.6;
+      word-wrap: break-word;
+    }
+
+    @media (max-width: 900px) {
+      body {
+        flex-direction: column;
+      }
+
+      .results-container {
+        width: 100%;
+        max-height: 300px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <script>
+    const password = prompt("Enter Password:");
+    if (password !== "LTO-R7-CCDO-2025") {
+      alert("Incorrect password. Access denied.");
+      document.body.innerHTML = "";
+      throw new Error("Unauthorized access");
+    }
+  </script>
+
+  <div class="form-container">
+    <h2>Plate Number Generator</h2>
+
+    <label for="type">Plate Type</label>
+    <select id="type">
+      <option value="MV">MV (Motor Vehicle)</option>
+      <option value="MC">MC (Motorcycle)</option>
+    </select>
+
+    <label for="region">Region Code</label>
+    <input type="text" id="region" maxlength="2" placeholder="e.g. G" />
+
+    <label for="series">Series</label>
+    <input type="text" id="series" maxlength="3" placeholder="e.g. BC" />
+
+    <label for="delimiter">Delimiter</label>
+    <select id="delimiter">
+      <option value=",">Comma (,)</option>
+      <option value=":">Colon (:)</option>
+      <option value=";">Semicolon (;)</option>
+      <option value="-">Hyphen (-)</option>
+    </select>
+
+    <div class="checkbox-group">
+      <input type="checkbox" id="spaceAfter" />
+      <label for="spaceAfter">Add space after delimiter</label>
+    </div>
+
+    <label for="start">Starting Number</label>
+    <input type="number" id="start" value="9001" min="1" max="9999"/>
+
+    <label for="quantity">Quantity</label>
+    <input type="number" id="quantity" value="999" min="1" max="999"/>
+
+    <button onclick="generate()">Generate Plates</button>
+
+    <div class="button-group">
+      <button onclick="copyToClipboard()">Copy</button>
+      <button onclick="downloadPlates()">Download</button>
+    </div>
+  </div>
+
+  <div class="results-container">
+    <h3>Generated Plates</h3>
+    <div id="results"></div>
+  </div>
+
+  <script>
+    function generate() {
+      const region = document.getElementById('region').value.toUpperCase();
+      const series = document.getElementById('series').value.toUpperCase();
+      let delimiter = document.getElementById('delimiter').value;
+      const addSpace = document.getElementById('spaceAfter').checked;
+      if (addSpace) delimiter += ' ';
+
+      const start = parseInt(document.getElementById('start').value);
+      const quantity = parseInt(document.getElementById('quantity').value);
+      const type = document.getElementById('type').value;
+
+      if (!region || !series || isNaN(start) || isNaN(quantity)) {
+        alert("Please fill in all fields correctly.");
+        return;
+      }
+
+      const results = [];
+      for (let i = 0; i < quantity; i++) {
+        const number = (start + i).toString();
+        let plate = '';
+        if (type === "MV") {
+          plate = `${region}${series}${number}`;
+        } else if (type === "MC") {
+          plate = `${region}${number}${series}`;
+        }
+        results.push(plate);
+      }
+
+      const finalOutput = results.join(delimiter);
+      document.getElementById('results').textContent = finalOutput;
+    }
+
+    function copyToClipboard() {
+      const text = document.getElementById('results').textContent;
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(() => {
+          alert("Copied to clipboard!");
+        }, err => {
+          alert("Clipboard copy failed.");
+        });
+      } else {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+          document.execCommand('copy');
+          alert("Copied to clipboard!");
+        } catch (err) {
+          alert("Clipboard copy failed.");
+        }
+        document.body.removeChild(textarea);
+      }
+    }
+
+    function downloadPlates() {
+      const text = document.getElementById('results').textContent;
+      const blob = new Blob([text], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'plate_numbers.txt';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+  </script>
+</body>
+</html>
