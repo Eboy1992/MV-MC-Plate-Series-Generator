@@ -169,7 +169,22 @@
       line-height: 1.6;
       word-wrap: break-word;
     }
-
+    /* Transparent background logo for login only */
+      .bg-logo {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url('images/LTOR7LOGO.jpg');
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 45%;
+        opacity: 0.05;
+        z-index: -1;
+        pointer-events: none;
+      }
+    
     @media (max-width: 900px) {
       .main-content {
         flex-direction: column;
@@ -178,21 +193,6 @@
       .results-container {
         width: 100%;
         max-height: 300px;
-      }
-      /* Transparent background logo for login only */
-      .bg-logo {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-image: url('LTOR7LOGO.jpg');
-        background-repeat: no-repeat;
-        background-position: center;
-        background-size: 45%;
-        opacity: 0.05;
-        z-index: -1;
-        pointer-events: none;
       }
     }
   </style>
