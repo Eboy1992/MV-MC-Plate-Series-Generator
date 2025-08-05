@@ -11,10 +11,68 @@
 
     body {
       font-family: Arial, sans-serif;
-      padding: 20px;
+      padding: 0;
       margin: 0;
+      background:#EDEDED;
+    }
+
+    .login-container {
       display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background-color:#EDEDED;
+    }
+
+    .login-box {
+      background-color: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .login-box h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .login-box label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .login-box input,
+    .login-box select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .login-box button {
+      width: 100%;
+      padding: 10px;
+      background-color: #007BFF;
+      border: none;
+      color: white;
+      font-weight: bold;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .login-box button:hover {
+      background-color: #0056b3;
+    }
+
+    .main-content {
+      display: none;
       gap: 30px;
+      padding: 20px;
     }
 
     .form-container {
@@ -42,14 +100,23 @@
     }
 
     .checkbox-group {
-      display: flex;
-      align-items: center;
-      margin-bottom: 15px;
-    }
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  gap: 0.5rem; /* adds spacing between checkbox and label */
+}
 
-    .checkbox-group input[type="checkbox"] {
-      margin-right: 8px;
-    }
+.checkbox-group input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #007BFF; /* optional: color style */
+}
+
+.checkbox-group label {
+  font-size: 14px;
+  cursor: pointer;
+}
+
 
     button {
       width: 100%;
@@ -104,7 +171,7 @@
     }
 
     @media (max-width: 900px) {
-      body {
+      .main-content {
         flex-direction: column;
       }
 
@@ -112,98 +179,146 @@
         width: 100%;
         max-height: 300px;
       }
+      /* Transparent background logo for login only */
+      .bg-logo {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url('LTOR7LOGO.jpg');
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 45%;
+        opacity: 0.05;
+        z-index: -1;
+        pointer-events: none;
+      }
     }
   </style>
 </head>
 <body>
-  <script>
-    const password = prompt("Enter Password:");
-    if (password !== "LTO-R7-CCDO-2025") {
-      alert("Incorrect password. Access denied.");
-      document.body.innerHTML = "";
-      throw new Error("Unauthorized access");
-    }
-  </script>
-
-  <div class="form-container">
-    <h2>Plate Number Generator</h2>
-
-    <label for="type">Plate Type</label>
-    <select id="type">
-      <option value="MV">MV (Motor Vehicle)</option>
-      <option value="MC">MC (Motorcycle)</option>
-    </select>
-
-    <label for="region">Region Code</label>
-    <input type="text" id="region" maxlength="2" placeholder="e.g. G" />
-
-    <label for="series">Series</label>
-    <input type="text" id="series" maxlength="3" placeholder="e.g. BC" />
-
-    <label for="delimiter">Delimiter</label>
-    <select id="delimiter">
-      <option value=",">Comma (,)</option>
-      <option value=":">Colon (:)</option>
-      <option value=";">Semicolon (;)</option>
-      <option value="-">Hyphen (-)</option>
-    </select>
-
-    <div class="checkbox-group">
-      <input type="checkbox" id="spaceAfter" />
-      <label for="spaceAfter">Add space after delimiter</label>
-    </div>
-
-    <label for="start">Starting Number</label>
-    <input type="number" id="start" value="9001" min="1" max="9999"/>
-
-    <label for="quantity">Quantity</label>
-    <input type="number" id="quantity" value="999" min="1" max="999"/>
-
-    <button onclick="generate()">Generate Plates</button>
-
-    <div class="button-group">
-      <button onclick="copyToClipboard()">Copy</button>
-      <button onclick="downloadPlates()">Download</button>
+  <div class="login-container" id="login">
+    <div class="bg-logo"></div> <!-- Transparent Logo Background -->
+    <div class="login-box">
+      <h2>Office Login</h2>
+      <label for="office">Office</label>
+      <select id="office">
+        <option value="">Select Office</option>
+        <option value="LTO RVII (CEBU CITY DISTRICT OFFICE)">LTO RVII (CEBU CITY DISTRICT OFFICE)</option>
+        <option value="LTO RVII (NEW REGISTRATION UNIT)">LTO RVII (NEW REGISTRATION UNIT)</option>
+      </select>
+      <label for="password">Password</label>
+      <input type="password" id="password" placeholder="Enter Password" />
+      <button onclick="authenticate()">Login</button>
     </div>
   </div>
 
-  <div class="results-container">
-    <h3>Generated Plates</h3>
-    <div id="results"></div>
+  <div class="main-content" id="main">
+    <div class="form-container">
+      <h2>Plate Number Generator</h2>
+
+      <label for="type">Plate Type</label>
+      <select id="type">
+        <option value="MV">MV (Motor Vehicle)</option>
+        <option value="MC">MC (Motorcycle)</option>
+      </select>
+
+      <label for="region">Region Code</label>
+      <input type="text" id="region" maxlength="2" placeholder="e.g. G" />
+
+      <label for="series">Series</label>
+      <input type="text" id="series" maxlength="3" placeholder="e.g. BC" />
+
+      <label for="delimiter">Delimiter</label>
+      <select id="delimiter">
+        <option value=",">Comma (,)</option>
+        <option value=":">Colon (:)</option>
+        <option value=";">Semicolon (;)</option>
+        <option value="-">Hyphen (-)</option>
+      </select>
+
+      <div class="checkbox-group">
+        <input type="checkbox" id="spaceAfter" />
+        <label for="spaceAfter">Add space after delimiter</label>
+      </div>
+
+      <label for="start">Starting Number</label>
+      <input type="number" id="start" value="9001" min="1" max="9999"/>
+
+      <label for="quantity">Quantity</label>
+      <input type="number" id="quantity" value="999" min="1" max="999"/>
+
+      <button onclick="generate()">Generate Plates</button>
+
+      <div class="button-group">
+        <button onclick="copyToClipboard()">Copy</button>
+        <button onclick="downloadPlates()">Download</button>
+      </div>
+    </div>
+
+    <div class="results-container">
+      <h3>Generated Plates</h3>
+      <div id="results"></div>
+    </div>
   </div>
 
   <script>
-    function generate() {
-      const region = document.getElementById('region').value.toUpperCase();
-      const series = document.getElementById('series').value.toUpperCase();
-      let delimiter = document.getElementById('delimiter').value;
-      const addSpace = document.getElementById('spaceAfter').checked;
-      if (addSpace) delimiter += ' ';
+    const PASSWORDS = {
+      "LTO RVII (CEBU CITY DISTRICT OFFICE)": "LTO-R7-CCDO-2025",
+      "LTO RVII (NEW REGISTRATION UNIT)": "LTO-R7-NRU-2025"
+    };
 
-      const start = parseInt(document.getElementById('start').value);
-      const quantity = parseInt(document.getElementById('quantity').value);
-      const type = document.getElementById('type').value;
+    function authenticate() {
+      const office = document.getElementById('office').value;
+      const password = document.getElementById('password').value;
 
-      if (!region || !series || isNaN(start) || isNaN(quantity)) {
-        alert("Please fill in all fields correctly.");
+      if (!office || !password) {
+        alert("Please select office and enter password.");
         return;
       }
 
-      const results = [];
-      for (let i = 0; i < quantity; i++) {
-        const number = (start + i).toString();
-        let plate = '';
-        if (type === "MV") {
-          plate = `${region}${series}${number}`;
-        } else if (type === "MC") {
-          plate = `${region}${number}${series}`;
-        }
-        results.push(plate);
+      if (PASSWORDS[office] && PASSWORDS[office] === password) {
+        document.getElementById('login').style.display = 'none';
+        document.getElementById('main').style.display = 'flex';
+      } else {
+        alert("Invalid office or password.");
       }
-
-      const finalOutput = results.join(delimiter);
-      document.getElementById('results').textContent = finalOutput;
     }
+
+      function generate() {
+        const region = document.getElementById('region').value.toUpperCase();
+        const series = document.getElementById('series').value.toUpperCase();
+        let delimiter = document.getElementById('delimiter').value;
+        const addSpace = document.getElementById('spaceAfter').checked;
+        if (addSpace) delimiter += ' ';
+      
+        const start = parseInt(document.getElementById('start').value);
+        const quantity = parseInt(document.getElementById('quantity').value);
+        const type = document.getElementById('type').value;
+      
+        if (!region || !series || isNaN(start) || isNaN(quantity)) {
+          alert("Please fill in all fields correctly.");
+          return;
+        }
+      
+        const results = [];
+        for (let i = 0; i < quantity; i++) {
+          const rawNumber = start + i;
+          let number = rawNumber.toString(); // No padding with zero at all
+      
+          let plate = '';
+          if (type === "MV") {
+            plate = `${region}${series}${number}`;
+          } else if (type === "MC") {
+            plate = `${region}${number}${series}`;
+          }
+          results.push(plate);
+        }
+      
+        const finalOutput = results.join(delimiter);
+        document.getElementById('results').textContent = finalOutput;
+      }
 
     function copyToClipboard() {
       const text = document.getElementById('results').textContent;
