@@ -1,0 +1,38 @@
+{
+  "name": "plate-series-number-generator",
+  "version": "1.0.0",
+  "description": "Plate number generator",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder"
+  },
+  "keywords": [],
+  "author": "Eboy",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^37.2.5",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "com.eboy.plateseriesapp",
+    "productName": "Plate Series Number Generator",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "**/*"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "build/icon.ico"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "Eboy1992",
+        "repo": "plate-series-number-generator"
+      }
+    ]
+  }
+}
