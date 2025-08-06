@@ -13,7 +13,8 @@
       font-family: Arial, sans-serif;
       padding: 0;
       margin: 0;
-      background:#EDEDED;
+      background:gray;
+      border: black 1px solid;
     }
 
     .login-container {
@@ -22,7 +23,13 @@
       align-items: center;
       justify-content: center;
       height: 100vh;
-      background-color:#EDEDED;
+      background-color:#4F46E5;
+    }
+
+    .login-logo {
+      width: 180px;
+      margin-bottom: 20px;
+      border-radius: 50%;
     }
 
     .login-box {
@@ -89,6 +96,7 @@
       display: block;
       margin-bottom: 6px;
       font-weight: bold;
+      color: white;
     }
 
     input, select {
@@ -100,23 +108,22 @@
     }
 
     .checkbox-group {
-  display: flex;
-  align-items: center;
-  margin-bottom: 8px;
-  gap: 0.5rem; /* adds spacing between checkbox and label */
-}
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+      gap: 0.5rem;
+    }
 
-.checkbox-group input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
-  accent-color: #007BFF; /* optional: color style */
-}
+    .checkbox-group input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: #007BFF;
+    }
 
-.checkbox-group label {
-  font-size: 14px;
-  cursor: pointer;
-}
-
+    .checkbox-group label {
+      font-size: 14px;
+      cursor: pointer;
+    }
 
     button {
       width: 100%;
@@ -169,22 +176,12 @@
       line-height: 1.6;
       word-wrap: break-word;
     }
-    /* Transparent background logo for login only */
-      .bg-logo {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-image: url('LtoR7Logo.jpg');
-        background-repeat: no-repeat;
-        background-position: center;
-        background-size: 45%;
-        opacity: 0.05;
-        z-index: -1;
-        pointer-events: none;
-      }
-    
+    .header-banner {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    display: none;
+  }
     @media (max-width: 900px) {
       .main-content {
         flex-direction: column;
@@ -199,7 +196,7 @@
 </head>
 <body>
   <div class="login-container" id="login">
-    <div class="bg-logo"></div> <!-- Transparent Logo Background -->
+    <img src="LtoR7Logo.png" alt="LTO Logo" class="login-logo" />
     <div class="login-box">
       <h2>Office Login</h2>
       <label for="office">Office</label>
@@ -213,7 +210,7 @@
       <button onclick="authenticate()">Login</button>
     </div>
   </div>
-
+  <img src="LtoR7Logo212.png" alt="LTO Region 7 Central Visayas" class="header-banner" id="headerBanner">
   <div class="main-content" id="main">
     <div class="form-container">
       <h2>Plate Number Generator</h2>
@@ -280,45 +277,46 @@
 
       if (PASSWORDS[office] && PASSWORDS[office] === password) {
         document.getElementById('login').style.display = 'none';
+        document.getElementById('headerBanner').style.display = 'block';
         document.getElementById('main').style.display = 'flex';
       } else {
         alert("Invalid office or password.");
       }
     }
 
-      function generate() {
-        const region = document.getElementById('region').value.toUpperCase();
-        const series = document.getElementById('series').value.toUpperCase();
-        let delimiter = document.getElementById('delimiter').value;
-        const addSpace = document.getElementById('spaceAfter').checked;
-        if (addSpace) delimiter += ' ';
-      
-        const start = parseInt(document.getElementById('start').value);
-        const quantity = parseInt(document.getElementById('quantity').value);
-        const type = document.getElementById('type').value;
-      
-        if (!region || !series || isNaN(start) || isNaN(quantity)) {
-          alert("Please fill in all fields correctly.");
-          return;
-        }
-      
-        const results = [];
-        for (let i = 0; i < quantity; i++) {
-          const rawNumber = start + i;
-          let number = rawNumber.toString(); // No padding with zero at all
-      
-          let plate = '';
-          if (type === "MV") {
-            plate = `${region}${series}${number}`;
-          } else if (type === "MC") {
-            plate = `${region}${number}${series}`;
-          }
-          results.push(plate);
-        }
-      
-        const finalOutput = results.join(delimiter);
-        document.getElementById('results').textContent = finalOutput;
+    function generate() {
+      const region = document.getElementById('region').value.toUpperCase();
+      const series = document.getElementById('series').value.toUpperCase();
+      let delimiter = document.getElementById('delimiter').value;
+      const addSpace = document.getElementById('spaceAfter').checked;
+      if (addSpace) delimiter += ' ';
+
+      const start = parseInt(document.getElementById('start').value);
+      const quantity = parseInt(document.getElementById('quantity').value);
+      const type = document.getElementById('type').value;
+
+      if (!region || !series || isNaN(start) || isNaN(quantity)) {
+        alert("Please fill in all fields correctly.");
+        return;
       }
+
+      const results = [];
+      for (let i = 0; i < quantity; i++) {
+        const rawNumber = start + i;
+        let number = rawNumber.toString();
+
+        let plate = '';
+        if (type === "MV") {
+          plate = `${region}${series}${number}`;
+        } else if (type === "MC") {
+          plate = `${region}${number}${series}`;
+        }
+        results.push(plate);
+      }
+
+      const finalOutput = results.join(delimiter);
+      document.getElementById('results').textContent = finalOutput;
+    }
 
     function copyToClipboard() {
       const text = document.getElementById('results').textContent;
