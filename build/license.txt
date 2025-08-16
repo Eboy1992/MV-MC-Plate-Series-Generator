@@ -1,0 +1,5 @@
+Plate Series Number Generator
+Copyright (c) 2025 Engr. Eboy
+
+This software is provided "as is" without warranty of any kind.
+Unauthorized distribution or modification is prohibited.
